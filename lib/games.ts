@@ -1,18 +1,22 @@
-export const GAMES = [
+import type { GameSlug } from "@tcgpricelookup/sdk";
+
+export type { GameSlug };
+
+export const GAMES: ReadonlyArray<{ slug: GameSlug; name: string }> = [
   { slug: "pokemon", name: "Pokémon" },
+  { slug: "pokemon-jp", name: "Pokémon Japan" },
   { slug: "mtg", name: "Magic: The Gathering" },
   { slug: "yugioh", name: "Yu-Gi-Oh!" },
+  { slug: "onepiece", name: "One Piece" },
   { slug: "lorcana", name: "Disney Lorcana" },
-  { slug: "one-piece", name: "One Piece" },
-  { slug: "flesh-and-blood", name: "Flesh and Blood" },
-  { slug: "star-wars-unlimited", name: "Star Wars: Unlimited" },
-  { slug: "digimon", name: "Digimon" },
-] as const;
+  { slug: "swu", name: "Star Wars: Unlimited" },
+  { slug: "fab", name: "Flesh and Blood" },
+];
 
-export type GameSlug = (typeof GAMES)[number]["slug"];
+const SLUG_SET = new Set<string>(GAMES.map((g) => g.slug));
 
 export function isGameSlug(value: string): value is GameSlug {
-  return GAMES.some((g) => g.slug === value);
+  return SLUG_SET.has(value);
 }
 
 export function gameName(slug: GameSlug): string {

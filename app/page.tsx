@@ -16,13 +16,13 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   let cards: TcgCard[] = [];
   if (q) {
-    const result = await tcg.cards.search({ q, game: game as any, limit: 24 });
+    const result = await tcg.cards.search({ q, game, limit: 24 });
     cards = result.data as TcgCard[];
   }
 
   return (
     <>
-      <Hero defaultQuery={q} activeGame={game as any} />
+      <Hero defaultQuery={q} activeGame={game} />
       <main className="mx-auto max-w-6xl px-4 py-12">
         {!q && (
           <EmptyState
