@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nextjs-tcg-starter
 
-## Getting Started
+A polished, one-click-deployable Next.js 16 app showcasing [`@tcgpricelookup/sdk`](https://www.npmjs.com/package/@tcgpricelookup/sdk) — search live trading card prices across 8 games (Pokémon, Pokémon Japan, MTG, Yu-Gi-Oh, Lorcana, One Piece, Flesh and Blood, Star Wars: Unlimited) with a single batched API call.
 
-First, run the development server:
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FTCG-Price-Lookup%2Fnextjs-tcg-starter&env=TCG_API_KEY&envDescription=Free%20API%20key%20%E2%80%94%20200%20requests%2Fday%2C%20no%20credit%20card&envLink=https%3A%2F%2Ftcgpricelookup.com%2Ftcg-api)
+
+![Screenshot](./docs/screenshot.png)
+
+## What this is
+
+A real, working Next.js app you can deploy in 60 seconds:
+
+- **Search** — type any card name, hit enter, see live prices across 8 games
+- **Card detail pages** — TCGPlayer market + low, eBay 7-day average, set/rarity metadata
+- **Per-game browse pages** at `/games/pokemon`, `/games/mtg`, etc. (cached hourly via ISR)
+- **Dark mode**, shadcn/ui, Tailwind 4
+- **Zero config** beyond a single API key
+- **Server components only** — your API key never reaches the browser
+
+## Quickstart (local)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+git clone https://github.com/TCG-Price-Lookup/nextjs-tcg-starter
+cd nextjs-tcg-starter
+pnpm install
+echo "TCG_API_KEY=your_key_here" > .env.local
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Get a free API key (200 requests/day, no credit card) at <https://tcgpricelookup.com/tcg-api>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open <http://localhost:3000> and search "charizard".
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Architecture
 
-## Learn More
+```
+URL: /?q=charizard&game=pokemon
+   │
+   ▼
+app/page.tsx (server component)
+   │  reads searchParams
+   ▼
+tcg.cards.search({ q, game, limit: 24 })   ← single SDK call, server-side
+   │
+   ▼
+<ResultsGrid cards={data} />               ← server-rendered HTML
+```
 
-To learn more about Next.js, take a look at the following resources:
+All SDK calls live in server components. No API route handlers, no client-side SDK use, no `NEXT_PUBLIC_` env vars. The `TCG_API_KEY` env var stays on your server.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Routes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Route | Notes |
+|---|---|
+| `/` | Search (server component, reads `?q=` and `?game=`) |
+| `/card/[id]` | Card detail (server component) |
+| `/games/[game]` | Browse 24 cards for a game (ISR, revalidates hourly) |
+| `/about` | Static about page |
 
-## Deploy on Vercel
+## How to extend
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Want a CLI version?** See [`tcglookup`](https://www.npmjs.com/package/tcglookup) on npm.
+- **Want a watchlist/portfolio tracker?** See the [50-line tracker tutorial](https://tcgpricelookup.com/blog/build-tcg-price-tracker-javascript).
+- **Full SDK docs:** <https://github.com/TCG-Price-Lookup/tcglookup-js>
+- **API reference:** <https://tcgpricelookup.com/docs/api-reference>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT
