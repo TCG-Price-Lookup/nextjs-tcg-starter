@@ -15,8 +15,8 @@ export function Hero({ defaultQuery, activeGame }: Props) {
           <span className="text-primary">one API</span>
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          Search across Pokémon, MTG, Yu-Gi-Oh, Lorcana, One Piece, Flesh and
-          Blood, Star Wars Unlimited, and Digimon. Powered by{" "}
+          Search across Pokémon (English & Japan), MTG, Yu-Gi-Oh, Lorcana, One
+          Piece, Flesh and Blood, and Star Wars: Unlimited. Powered by{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 text-sm">
             @tcgpricelookup/sdk
           </code>
