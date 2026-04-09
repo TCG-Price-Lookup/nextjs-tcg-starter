@@ -9,6 +9,7 @@ interface PageProps {
 }
 
 export const revalidate = 3600; // ISR: regenerate at most once per hour
+export const dynamicParams = false; // unknown slugs → 404
 
 export async function generateStaticParams() {
   return GAMES.map((g) => ({ game: g.slug }));
